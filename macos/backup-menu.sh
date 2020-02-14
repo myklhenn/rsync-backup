@@ -69,7 +69,7 @@ else
     echo "$(<$HOME/.backup-success)"
     echo "---"
   fi
-  if [ -n "$BACKUP_REPO_PATH" ] && [ -e $HELPER_CMD ]; then
+  if [ -n "$BACKUP_REPO_PATH" ] && [ -e $HELPER_CMD ] && [ ! -e $HOME/.backup-paused ]; then
     echo -n "Start Backup | "
     if [ -e $BACKUP_TERM_COMMAND ]; then
       echo "bash=$BACKUP_TERM_COMMAND param1=\"$HELPER_CMD --start-backup\" terminal=false"
