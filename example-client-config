@@ -1,10 +1,10 @@
 # hostname of backup server to connect to
-BACKUP_SERVER_HOSTNAME="chordnas"
+BACKUP_SERVER_HOSTNAME=""
 # path on server of backup repository
 # (backed up data, log file, filter file, and backup script)
-BACKUP_REPO_PATH="/mnt/MainVolume/Backups/chordbook"
+BACKUP_REPO_PATH=""
 # local path of private SSH key used to connect to server
 # (the public key is assumed to be at the same path with ".pub" appended)
-BACKUP_SSH_KEY_PATH="$HOME/.ssh/chordnas_ed25519"
+BACKUP_SSH_KEY_PATH=""
 # local path to launcher for alternative terminal (such as iTerm)
-BACKUP_TERM_COMMAND="$HOME/.local/bin/iterm"
+BACKUP_TERM_COMMAND=""
