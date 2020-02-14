@@ -17,8 +17,8 @@ rsync $@
 
 if [ $? = 0 ]; then
   rm -f $HOME/.backup-error
-  echo "$(date "+%a %d/%m/%Y %I:%M %p")" > $HOME/.backup-success
+  echo "$(date "+%a %m/%d/%Y %I:%M %p")" > $HOME/.backup-success
 else
-  echo "$(date "+%a %d/%m/%Y %I:%M %p")" > $HOME/.backup-error
+  echo "$(date "+%a %m/%d/%Y %I:%M %p")" > $HOME/.backup-error
 fi
 exit 0
