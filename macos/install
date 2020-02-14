@@ -1,0 +1,27 @@
+#!/bin/sh
+
+PLUGINS_DIR=$(defaults read com.matryer.BitBar pluginsDirectory)
+
+export PATH=$PATH:/usr/local/bin
+if [ $? -ne 0 ]; then
+  echo "BitBar is either not installed or not yet configured."
+  echo "Aborting \"backup-menu\" installation."
+  exit 1
+elif ! which realpath > /dev/null; then
+  echo "This script requires the \"realpath\" command to function."
+  echo "Install on macOS with Brew by running \"brew install coreutils\"."
+  echo "Aborting \"backup-menu\" installation."
+  exit 1
+else
+  REPO_PATH="$(dirname $(realpath $0))/.."
+  ln -s $REPO_PATH/macos/backup-menu.sh $PLUGINS_DIR/backup-menu.5s.sh
+  echo "\"backup-menu.sh\" added to BitBar plugins"
+  if [ ! -e $HOME/.backup-config ]; then
+    echo "Config file not found. Copying a sample to \"$HOME/.backup-config\""
+    cp $REPO_PATH/example-client-config $HOME/.backup-config
+  fi
+  if [ ! -e $HOME/.backup-script ]; then
+    echo "Linking \"backup-client-script.sh\" to \"$HOME/.backup-script\""
+    ln -s $REPO_PATH/backup-client-script.sh $HOME/.backup-script
+  fi
+fi
