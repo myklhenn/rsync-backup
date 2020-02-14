@@ -2,14 +2,17 @@
 # TODO: find a way to "respond" if backups is paused or cancelled by user
 
 cleanup () {
+  pkill -1 -af "rsync --server --sender"
   rm -f $HOME/.backup-running
+  open -g "bitbar://refreshPlugin?name=backup-menu.*?.sh"
 }
-trap cleanup 0 1 2 3 6
+trap cleanup 0 1 4
 
 [ -e $HOME/.backup-paused ] && exit 1
 
 echo "$(date "+%I:%M %p")" > $HOME/.backup-running
 
+open -g "bitbar://refreshPlugin?name=backup-menu.*?.sh"
 rsync $@
 
 if [ $? = 0 ]; then
@@ -18,3 +21,4 @@ if [ $? = 0 ]; then
 else
   echo "$(date "+%a %d/%m/%Y %I:%M %p")" > $HOME/.backup-error
 fi
+exit 0

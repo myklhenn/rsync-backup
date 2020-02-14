@@ -32,7 +32,7 @@ fi
     --delete \
     --delay-updates \
     --rsh="/usr/bin/ssh" \
-    --rsync-path="$BACKUP_CLIENT_SCRIPT"
+    --rsync-path="$BACKUP_CLIENT_SCRIPT" \
     --include-from="$REPO_PATH/backup-filter" \
     --log-file="$REPO_PATH/backup-log" \
     $BACKUP_CLIENT_HOSTNAME:$BACKUP_CLIENT_PATH \

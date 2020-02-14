@@ -48,12 +48,10 @@ case $1 in
     ;;
   "--start-backup")
     check_ssh_key
-    ssh $BACKUP_SERVER_HOSTNAME "$BACKUP_REPO_PATH/backup-script --progress"
-    refresh_menu
+    ssh $BACKUP_SERVER_HOSTNAME "$BACKUP_REPO_PATH/backup-script"
     ;;
   "--stop-backup")
-    pkill -3 -a "^backup-client-script.sh$"
-    refresh_menu
+    pkill -15 -af "/bin/sh /Users/myklhenn/.backup-script"
     ;;
   "--pause-backups")
     rm $HOME/.backup-paused 2>/dev/null || touch $HOME/.backup-paused
