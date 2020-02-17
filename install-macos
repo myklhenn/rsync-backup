@@ -1,0 +1,62 @@
+#!/bin/sh
+
+use_colors() {
+    RC="\033[0;31m" # red color
+    GC="\033[0;32m" # green color
+    YC="\033[0;33m" # yellow color
+    CC="\033[0;36m" # cyan color
+    NC="\033[0m"    # no color
+}
+[ "$SHELL" != "/bin/csh" ] && use_colors
+
+abort() {
+    echo $RC"Aborting \"backup-menu\" installation."$NC
+    exit 1
+}
+
+PLUGINS_PATH=$(defaults read com.matryer.BitBar pluginsDirectory)
+
+if [ $? -ne 0 ]; then
+    echo $YC"BitBar is either not installed or not yet configured."$NC
+    abort
+fi
+
+SUITE_PATH="$PWD/$(dirname $0)"
+
+if [ -e $HOME/.backup-suite ]; then
+    if [ ! $HOME/.backup-suite -ef $SUITE_PATH ]; then
+        echo $YC"Backup suite already present in home directory,"$NC
+        echo $RC"but pointing to something else."$NC
+        echo $YC"Manually resolve this issue and try again."$NC
+        abort
+    else
+        echo $CC"Backup suite already present in home directory."$NC
+    fi
+else
+    ln -sv $SUITE_PATH $HOME/.backup-suite
+    echo $YC"Backup suite linked to home directory."$NC
+fi
+
+if [ -e $PLUGINS_PATH/backup-menu.5s.sh ]; then
+    if [ ! $PLUGINS_PATH/backup-menu.5s.sh -ef $SUITE_PATH/macos/backup-menu.sh ]; then
+        echo $YC"Backup menu already added to BitBar plugins,"$NC
+        echo $RC"but pointing to something else."$NC
+        echo $YC"Manually resolve this issue and try again."$NC
+        abort
+    else
+        echo $CC"Backup menu already added to BitBar plugins."$NC
+    fi
+else
+    ln -sv $SUITE_PATH/macos/backup-menu.sh $PLUGINS_PATH/backup-menu.5s.sh
+    echo $YC"Backup menu added to BitBar plugins."$NC
+fi
+
+if [ -e $HOME/.backup-config ]; then
+    echo $CC"Configuration file already present in home directory."$NC
+else
+    echo $YC"Configuration file not found."$NC
+    echo $YC"Copying a sample config file to home directory."$NC
+    cp -v $SUITE_PATH/config/example-client-config $HOME/.backup-config
+fi
+
+echo $GC"Done.\n"$NC

@@ -1,3 +1,5 @@
+#!/bin/sh
+#
 # hostname of backup server to connect to
 BACKUP_SERVER_HOSTNAME=""
 # path on server of backup repository

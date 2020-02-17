@@ -1,21 +1,39 @@
 #!/bin/sh
 
-if which realpath > /dev/null; then
-  echo "This script requires the \"realpath\" command to function."
-  echo "Aborting backup repository creation."
-  exit 1
-fi
+use_colors() {
+    RC="\033[0;31m" # red color
+    GC="\033[0;32m" # green color
+    YC="\033[0;33m" # yellow color
+    NC="\033[0m"    # no color
+}
+[ "$SHELL" != "/bin/csh" ] && use_colors
 
-REPO_PATH="$(dirname $(realpath $0))"
-if [ -z "$1" ]; then
-  echo "No path specified!"
-  echo "Usage: $0 /path/to/new/repo"
-  exit 1
+print_usage() {
+    # ($1: name of command)
+    echo "Usage: $(basename $1) /path/to/new/repo"
+}
+abort() {
+    echo $RC"Aborting backup repository creation."$NC
+    exit 1
+}
+
+REPO_PATH="$PWD/$(dirname $0)"
+if [ "$1" = "--help" ]; then
+    print_usage $0
+    exit 0
+elif [ -z "$1" ]; then
+    echo $YC"No path specified!"$NC
+    print_usage $0
+    abort
+elif [ -e $1 ]; then
+    echo $YC"The specified directory already exists."$NC
+    abort
 fi
 mkdir -pv $1
 if [ -e $1 ]; then
-  touch $1/backup-filter $1/backup-log
-  cp $REPO_PATH/example-server-config $1/backup-config
-  ln -s $REPO_PATH/backup-server-script.sh $1/backup-script
+    touch $1/backup-filter $1/backup-log
+    cp $REPO_PATH/example-server-config $1/backup-config
+    ln -s $REPO_PATH/backup-server-script.sh $1/backup-script
 fi
-echo "Backup repository created at \"$1\"."
+echo $YC"Backup repository created at \"$1\"."$NC
+echo $GC"Done.\n"$NC

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # <bitbar.title>Backup Menu</bitbar.title>
 # <bitbar.version>v1.0</bitbar.version>
 # <bitbar.author>Michael Henning</bitbar.author>
@@ -13,82 +13,78 @@
 # BACKUP_REPO_PATH -- path on server of backup repository
 # BACKUP_TERM_COMMAND -- path to launcher for alternative terminal (i.e. iTerm)
 
+SUITE_PATH="$HOME/.backup-suite"
+
+if [ ! -e $SUITE_PATH ]; then
+    echo "⚠️"
+    echo "---"
+    echo "Backup suite is not present in home directory, as required."
+    echo "Use the suite's \"install-macos\" command to resolve this issue."
+    exit 1
+fi
+
+HELPER_CMD="$SUITE_PATH/macos/backup-menu-helper.sh"
+
+echo_menu_item_with_term() {
+    # ($1: name of command to show in BitBar, $2: argument for helper script)
+    echo -n "$1 | bash="
+    if [ -e $BACKUP_TERM_COMMAND ]; then
+        echo "$BACKUP_TERM_COMMAND param1=\"$HELPER_CMD $2\" terminal=false"
+    else
+        echo "$HELPER_CMD param1=\"$2\" terminal=true"
+    fi
+}
+echo_menu_item() {
+    # ($1: name of command to show in BitBar, $2: argument for helper script)
+    echo "$1 | bash=$HELPER_CMD param1=\"$2\" terminal=false"
+}
+echo_menu_icon() {
+    # ($1: name of file in $SUITE_PATH/img containing a base64-encoded icon)
+    echo "| templateImage=$(<$SUITE_PATH/img/$1)"
+}
+
 [ -e $HOME/.backup-config ] && source $HOME/.backup-config
 
-HELPER_CMD=""
-IMG_PATH=""
-
-export PATH=$PATH:/usr/local/bin
-if which realpath > /dev/null; then
-  REPO_PATH="$(dirname $(realpath $0))/.."
-  HELPER_CMD="$REPO_PATH/macos/backup-menu-helper.sh"
-  IMG_PATH="$REPO_PATH/img"
-else
-  echo "⚠️"
-  echo "---"
-  echo "This BitBar plugin requires the"
-  echo "\"realpath\" command to function"
-  echo -n "Install with Brew | "
-  if [ -e $BACKUP_TERM_COMMAND ]; then
-    echo "bash=$BACKUP_TERM_COMMAND param1=\"brew install coreutils\" terminal=false"
-  else
-    echo "bash=brew param1=install param2=coreutils terminal=true"
-  fi
-  echo "Learn More | href=https://github.com/myklhenn/rsync-backup/blob/master/README.md"
-  exit 1
-fi
-
 if [ -e $HOME/.backup-running ]; then
-  echo "| templateImage=$(<$IMG_PATH/fa-arrow-circle-up-solid)"
-  echo "---"
-  echo "Backup running"
-  echo "(started at $(<$HOME/.backup-running))"
-  echo "---"
-  echo "Stop Backup | bash=$HELPER_CMD param1=\"--stop-backup\" terminal=false"
+    echo_menu_icon "fa-arrow-circle-up-solid"
+    echo "---"
+    echo "Backup running"
+    echo "(started at $(<$HOME/.backup-running))"
+    echo "---"
+    echo_menu_item "Stop Backup" "--stop-backup"
 else
-  if [ -e $HOME/.backup-paused ]; then
-    echo "| templateImage=$(<$IMG_PATH/fa-pause-circle)"
-    echo "---"
-    echo "Backups are paused"
-    echo "---"
-  elif [ -e $HOME/.backup-error ]; then
-    echo "| templateImage=$(<$IMG_PATH/fa-times-circle-solid)"
-    echo "---"
-    echo "There was an error during the last backup"
-    echo "(on $(<$HOME/.backup-error))"
-    echo "Hide Error | bash=$HELPER_CMD param1=\"--hide-error\" terminal=false"
-    echo "---"
-  else
-    echo "| templateImage=$(<$IMG_PATH/fa-check-circle)"
-    echo "---"
-    echo "Backup not running"
-    echo "---"
-  fi
-  if [ -e $HOME/.backup-success ]; then
-    echo "Last successful backup on"
-    echo "$(<$HOME/.backup-success)"
-    echo "---"
-  fi
-  if [ -n "$BACKUP_REPO_PATH" ] && [ -e $HELPER_CMD ] && [ ! -e $HOME/.backup-paused ]; then
-    echo -n "Start Backup | "
-    if [ -e $BACKUP_TERM_COMMAND ]; then
-      echo "bash=$BACKUP_TERM_COMMAND param1=\"$HELPER_CMD --start-backup\" terminal=false"
+    if [ -e $HOME/.backup-paused ]; then
+        echo_menu_icon "fa-pause-circle"
+        echo "---"
+        echo "Backups are paused"
+        echo "---"
+    elif [ -e $HOME/.backup-error ]; then
+        echo_menu_icon "fa-times-circle-solid"
+        echo "---"
+        echo "There was an error during the last backup"
+        echo "(on $(<$HOME/.backup-error))"
+        echo_menu_item "Hide Error" "--hide-error"
+        echo "---"
     else
-      echo "bash=$HELPER_CMD param1=\"--start-backup\" terminal=true"
+        echo_menu_icon "fa-check-circle"
+        echo "---"
+        echo "Backup not running"
+        echo "---"
     fi
-  fi
+    if [ -e $HOME/.backup-success ]; then
+        echo "Last successful backup on"
+        echo "$(<$HOME/.backup-success)"
+        echo "---"
+    fi
+    if [ -n "$BACKUP_REPO_PATH" ] && [ ! -e $HOME/.backup-paused ]; then
+        echo_menu_item_with_term "Start Backup" "--start-backup"
+    fi
 fi
 if [ -e $HOME/.backup-paused ]; then
-    echo -n "Resume Backups | "
+    echo_menu_item "Resume Backups" "--pause-backups"
 else
-  echo -n "Pause Backups | "
+    echo_menu_item "Pause Backups" "--pause-backups"
 fi
-echo "bash=$HELPER_CMD param1=\"--pause-backups\" terminal=false"
-if [ -n "$BACKUP_REPO_PATH" ] && [ -e $HELPER_CMD ]; then
-  echo -n "Backup Log | "
-  if [ -e $BACKUP_TERM_COMMAND ]; then
-    echo "bash=$BACKUP_TERM_COMMAND param1=\"$HELPER_CMD --view-log\" terminal=false"
-  else
-    echo "bash=$HELPER_CMD param1=\"--view-log\" terminal=true"
-  fi
+if [ -n "$BACKUP_REPO_PATH" ]; then
+    echo_menu_item_with_term "Backup Log" "--view-log"
 fi

@@ -1,3 +1,5 @@
+#!/bin/sh
+#
 # hostname of client to back up data from
 # (as configured in ssh config file)
 BACKUP_CLIENT_HOSTNAME=""
@@ -8,7 +10,3 @@ BACKUP_CLIENT_PATH=""
 # (leave empty to put backed up data at the repository root,
 # otherwise make sure to end with a "/"!)
 BACKUP_DEST_FOLDER=""
-# path at which the "backup-client-script.sh" file will be found
-# on the client system (linked to $HOME/.backup-script by default during
-# installation)
-BACKUP_CLIENT_SCRIPT=""

@@ -1,0 +1,29 @@
+#!/bin/sh
+
+use_colors() {
+    RC="\033[0;31m" # red color
+    GC="\033[0;32m" # green color
+    YC="\033[0;33m" # yellow color
+    CC="\033[0;36m" # cyan color
+    NC="\033[0m"    # no color
+}
+[ "$SHELL" != "/bin/csh" ] && use_colors
+
+SUITE_PATH="$PWD/$(dirname $0)"
+
+if [ -e $HOME/.backup-suite ]; then
+    if [ ! $HOME/.backup-suite -ef $SUITE_PATH ]; then
+        echo $YC"Backup suite already present in home directory,"$NC
+        echo $RC"but pointing to something else."$NC
+        echo $YC"Manually resolve this issue and try again."$NC
+        echo $RC"Aborting \"backup-menu\" installation."$NC
+        exit 1
+    else
+        echo $CC"Backup suite already present in home directory."$NC
+    fi
+else
+    ln -sv $SUITE_PATH $HOME/.backup-suite
+    echo $YC"Backup suite linked to home directory."$NC
+fi
+
+echo $GC"Done.\n"$NC
