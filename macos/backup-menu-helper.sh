@@ -83,7 +83,7 @@ case $1 in
     check_config_item $BACKUP_SERVER_HOSTNAME "BACKUP_SERVER_HOSTNAME"
     check_config_item $BACKUP_REPO_PATH "BACKUP_REPO_PATH"
     [ "$ERRORS" = "1" ] && abort
-    ssh $BACKUP_SERVER_HOSTNAME "$BACKUP_REPO_PATH/backup-script" --dry-run
+    ssh $BACKUP_SERVER_HOSTNAME "$BACKUP_REPO_PATH/backup-script"
     ;;
 "--stop-backup")
     pkill -4 -af ".backup-suite/common/backup-client-script.sh"

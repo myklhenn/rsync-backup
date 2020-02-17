@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 use_colors() {
     RC="\033[0;31m" # red color
