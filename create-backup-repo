@@ -8,8 +8,17 @@ use_colors() {
 }
 [ "$SHELL" != "/bin/csh" ] && use_colors
 
+get_suite_path() {
+    # ($1: name of command, i.e. "$0")
+    SUITE_PATH="$(dirname $1)"
+    if [ "$SUITE_PATH" != "." ]; then
+        SUITE_PATH="$PWD/$SUITE_PATH"
+    else
+        SUITE_PATH="$PWD"
+    fi
+}
 print_usage() {
-    # ($1: name of command)
+    # ($1: name of command, i.e. "$0")
     echo "Usage: $(basename $1) /path/to/new/repo"
 }
 abort() {
@@ -17,7 +26,7 @@ abort() {
     exit 1
 }
 
-REPO_PATH="$PWD/$(dirname $0)"
+get_suite_path $0
 if [ "$1" = "--help" ]; then
     print_usage $0
     exit 0
@@ -32,8 +41,8 @@ fi
 mkdir -pv $1
 if [ -e $1 ]; then
     touch $1/backup-filter $1/backup-log
-    cp $REPO_PATH/example-server-config $1/backup-config
-    ln -s $REPO_PATH/backup-server-script.sh $1/backup-script
+    cp $SUITE_PATH/example-server-config $1/backup-config
+    ln -s $SUITE_PATH/backup-server-script.sh $1/backup-script
 fi
 echo $YC"Backup repository created at \"$1\"."$NC
 echo $GC"Done.\n"$NC

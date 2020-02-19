@@ -86,7 +86,7 @@ case $1 in
     ssh $BACKUP_SERVER_HOSTNAME "$BACKUP_REPO_PATH/backup-script"
     ;;
 "--stop-backup")
-    pkill -4 -af ".backup-suite/common/backup-client-script.sh"
+    pkill -15 -af ".backup-suite/common/backup-client-script.sh"
     ;;
 "--pause-backups")
     rm $HOME/.backup-paused 2>/dev/null || touch $HOME/.backup-paused

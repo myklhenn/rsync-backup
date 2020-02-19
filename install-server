@@ -9,7 +9,17 @@ use_colors() {
 }
 [ "$SHELL" != "/bin/csh" ] && use_colors
 
-SUITE_PATH="$PWD/$(dirname $0)"
+get_suite_path() {
+    # ($1: name of command, i.e. "$0")
+    SUITE_PATH="$(dirname $1)"
+    if [ "$SUITE_PATH" != "." ]; then
+        SUITE_PATH="$PWD/$SUITE_PATH"
+    else
+        SUITE_PATH="$PWD"
+    fi
+}
+
+get_suite_path $0
 
 if [ -e $HOME/.backup-suite ]; then
     if [ ! $HOME/.backup-suite -ef $SUITE_PATH ]; then
