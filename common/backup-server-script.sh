@@ -37,6 +37,10 @@ check_config_item "$BACKUP_DEST_FOLDER" "BACKUP_DEST_FOLDER"
 
 [ "$ERRORS" = "1" ] && abort
 
+if [ "$BACKUP_DEST_FOLDER" = "/" ]; then
+    BACKUP_DEST_FOLDER=""
+fi
+
 echo $GC"Starting backup."$NC
 
 /usr/local/bin/rsync $@ \

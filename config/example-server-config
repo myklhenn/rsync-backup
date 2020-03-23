@@ -4,9 +4,9 @@
 # (as configured in ssh config file)
 BACKUP_CLIENT_HOSTNAME=""
 # root path of backed up data on client system
-# (used by rsync, so make sure to end with a "/"!)
+# (used by rsync, so make sure to end the path with a "/"!)
 BACKUP_CLIENT_PATH=""
 # path at which to store backed up data inside the repository
-# (leave empty to put backed up data at the repository root,
-# otherwise make sure to end with a "/"!)
+# (set to "/" to put backed up data at the repository root,
+# otherwise make sure to end the path with a "/"!)
 BACKUP_DEST_FOLDER=""

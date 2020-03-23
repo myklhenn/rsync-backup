@@ -3,10 +3,15 @@
 # TODO: find a way to "respond" if backups is paused or cancelled by user
 
 refresh_menu() {
-    open -g "bitbar://refreshPlugin?name=backup-menu.*?.sh"
+    # TODO: temporary fix to allow running on Windows 10 (WSL)
+    if [ "$(uname)" = "Darwin" ]; then
+        open -g "bitbar://refreshPlugin?name=backup-menu.*?.sh"
+    fi
 }
 cleanup() {
-    pkill -1 -af "rsync --server --sender"
+    if [ "$(uname)" = "Darwin" ]; then
+        pkill -1 -af "rsync --server --sender"
+    fi
     rm -f $HOME/.backup-running
     refresh_menu
 }
